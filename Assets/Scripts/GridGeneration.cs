@@ -14,8 +14,13 @@ public class GridGeneration : MonoBehaviour
     float _hexSide;
     float _hexHalfHeight;
 
+    Transform[] _grid;
+
 	// Use this for initialization
 	void Start () {
+        _grid = new Transform[GridWidth * GridHeight];
+
+
         SpriteRenderer spriteRenderer = HexagonPrefab.GetComponent<SpriteRenderer>();
 
         Bounds spriteBounds = spriteRenderer.sprite.bounds;
@@ -26,7 +31,6 @@ public class GridGeneration : MonoBehaviour
 
 
         Vector3 hexCoords = Vector3.zero;
-        Vector3 hexPosition = Vector3.zero;
         // We instantiate the prefabs
         for (int hY = 0; hY < GridHeight; ++hY)
         {
@@ -34,23 +38,52 @@ public class GridGeneration : MonoBehaviour
             {
                 hexCoords.x = hX;
                 hexCoords.y = hY;
-                HexCoords.HexToWorld(_hexSide, _hexHalfHeight,
-                                   hexCoords, ref hexPosition);
+                Vector3 hexPosition = HexCoordsUtils.HexToWorld(_hexSide, _hexHalfHeight, hexCoords);
                 Transform t = (Transform)Instantiate(HexagonPrefab,
                                                      hexPosition,
                                                      Quaternion.identity);
+
+                // We store it in the array
+                _grid[GridWidth * hY + hX] = t;
             }
         }
 	
 	}
+
+    Transform _currentHex = null;
 	
 	// Update is called once per frame
 	void Update () {
         // We get mouse position
         Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 hexCoords = HexCoordsUtils.WorldToHex(_hexSide, _hexHalfHeight, pos);
         Vector3 rounded = Vector3.zero;
-        HexCoords.RoundHex(_hexSide, _hexHalfHeight, pos, ref rounded);
 
-        Debug.Log(string.Format("POS: {0}, ROUNDED: {1}", pos, rounded));
-	}
+        rounded = HexCoordsUtils.RoundHex(_hexSide, _hexHalfHeight, hexCoords);
+
+        int x = (int)rounded.x;
+        int y = (int)rounded.y;
+        Transform newHex = null;
+        if ((x >= 0) && (x < GridWidth) && 
+            (y >= 0) && (y < GridHeight))
+        {
+            newHex = _grid[GridWidth * y + x];
+            SpriteRenderer spriteRenderer = newHex.GetComponent<SpriteRenderer>();
+            spriteRenderer.color = Color.red;
+        }
+
+        if (_currentHex != newHex)
+        {
+            if (_currentHex != null)
+            {
+                SpriteRenderer currentRenderer = _currentHex.GetComponent<SpriteRenderer>();
+                currentRenderer.color = Color.white;
+            }
+            _currentHex = newHex;
+        }
+
+        // We clear the previous
+        Debug.Log(string.Format("POS: {0}, HEX: {1}, ROUNDED: {2}", pos, hexCoords, rounded));
+
+    }
 }

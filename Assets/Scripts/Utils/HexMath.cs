@@ -2,73 +2,57 @@
 
 namespace Assets.Scripts.Utils
 {
-    internal static class HexCoords
+    internal static class HexCoordsUtils
     {
-        internal static void HexToWorld(float hexSide, float hexHalfHeight,
-                        Vector3 hexCoords, ref Vector3 worldCoords)
+        internal static Vector3 HexToWorld(float hexSide, float hexHalfHeight,
+                                        Vector3 hexCoords)
         {
+            Vector3 worldCoords = Vector3.zero;
             worldCoords.x = (3 * hexSide * hexCoords.x) / 2;
             worldCoords.y = (hexHalfHeight * hexCoords.x ) + (2 * hexHalfHeight * hexCoords.y);
+            return worldCoords;
         }
 
-        internal static void WorldToHex(float hexSide, float hexHalfHeight,
-                                        Vector3 worldCoords, ref Vector3 hexCoords)
+        internal static Vector3 WorldToHex(float hexSide, float hexHalfHeight,
+                                           Vector3 worldCoords)
         {
-            hexCoords.x = 2 / (3 * hexSide);
-            hexCoords.y = (-1 / (3 * hexSide)) + (1 / (2 * hexHalfHeight));
+            Vector3 hexCoords = Vector3.zero;
+            hexCoords.x = (2 / (3 * hexSide)) * worldCoords.x;
+            hexCoords.y = (-1 / (3 * hexSide)) * worldCoords.x + 
+                          (1 / (2 * hexHalfHeight)) * worldCoords.y;
+            return hexCoords;
         }
 
-        internal static void RoundHex(float hexSide, float hexHalfHeight, 
-                                      Vector3 hexCoords, ref Vector3 roundedCoords)
+        internal static Vector3 RoundHex(float hexSide, float hexHalfHeight, 
+                                      Vector3 hexCoords)
         {
-            if ((hexCoords.x < 0) || (hexCoords.y < 0))
+            // We map into cube coordinates
+            hexCoords.z = -hexCoords.x - hexCoords.y;
+
+            Vector3 roundedCoords = Vector3.zero;
+            roundedCoords.x = Mathf.Round(hexCoords.x);
+            roundedCoords.y = Mathf.Round(hexCoords.y);
+            roundedCoords.z = Mathf.Round(hexCoords.z);
+
+            Vector3 diff = Vector3.zero;
+            diff.x = Mathf.Abs(roundedCoords.x - hexCoords.x);
+            diff.y = Mathf.Abs(roundedCoords.y - hexCoords.y);
+            diff.z = Mathf.Abs(roundedCoords.z - hexCoords.z);
+
+            if ((diff.x > diff.y) && (diff.x > diff.z))
             {
-                // TODO(Cristian): Support negative hex coords
-                throw new System.Exception("NO NEGATIVE HEX COORDS SUPPORTED");
+                roundedCoords.x = -roundedCoords.y - roundedCoords.z;
             }
-
-            float scaledX = hexCoords.x / ((3 * hexSide) / 2);
-            float scaledY = hexCoords.y / (2 * hexHalfHeight);
-
-            float fX = Mathf.Floor(scaledX);
-            float fY = Mathf.Floor(scaledY);
-            float restX = scaledX - fX;
-            float restY = scaledY - fY;
-
-            if (restX > 0.5)
+            else if (diff.y > diff.z)
             {
-                roundedCoords.x = fX + 1;
-                roundedCoords.y = fY;
+                roundedCoords.y = -roundedCoords.x - roundedCoords.z;
             }
             else
             {
-                if (restY > 0.5)
-                {
-                    if (restX > (restY / 2))
-                    {
-                        roundedCoords.x = fX + 1;
-                        roundedCoords.y = fY;
-                    }
-                    else
-                    {
-                        roundedCoords.x = fX;
-                        roundedCoords.y = fY + 1;
-                    }
-                }
-                else
-                {
-                    if (restX > (0.5 - (restY / 2)))
-                    {
-                        roundedCoords.x = fX + 1;
-                        roundedCoords.y = fY;
-                    }
-                    else
-                    {
-                        roundedCoords.x = fX;
-                        roundedCoords.y = fY;
-                    }
-                }
+                roundedCoords.z = -roundedCoords.x - roundedCoords.y;
             }
+
+            return roundedCoords;
         }
     }
 }
