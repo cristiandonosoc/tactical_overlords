@@ -5,22 +5,26 @@ using Assets.Scripts.Utils;
 
 public class GridGeneration : MonoBehaviour
 {
+    #region EDITOR
 
     public Transform HexagonPrefab;
+    public Transform CharacterPrefab;
 
     public int GridWidth;
     public int GridHeight;
+
+    #endregion
 
     float _hexSide;
     float _hexHalfHeight;
 
     Transform[] _grid;
 
+    GameObject _mainObject;
+
 	// Use this for initialization
 	void Start () {
         _grid = new Transform[GridWidth * GridHeight];
-
-
         SpriteRenderer spriteRenderer = HexagonPrefab.GetComponent<SpriteRenderer>();
 
         Bounds spriteBounds = spriteRenderer.sprite.bounds;
@@ -29,6 +33,8 @@ public class GridGeneration : MonoBehaviour
         _hexSide = hexagonExtents.x;
         _hexHalfHeight = (Mathf.Sqrt(3) * _hexSide) / 2;
 
+        _mainObject = new GameObject("Grid");
+        Transform mainTransform = _mainObject.transform;
 
         Vector3 hexCoords = Vector3.zero;
         // We instantiate the prefabs
@@ -42,6 +48,7 @@ public class GridGeneration : MonoBehaviour
                 Transform t = (Transform)Instantiate(HexagonPrefab,
                                                      hexPosition,
                                                      Quaternion.identity);
+                t.parent = mainTransform;
 
                 // We store it in the array
                 _grid[GridWidth * hY + hX] = t;
@@ -51,12 +58,38 @@ public class GridGeneration : MonoBehaviour
 	}
 
     Transform _currentHex = null;
+    Transform _character;
+
+    enum MouseButtons
+    {
+        LEFT = 0,
+        RIGHT = 1,
+        MIDDLE = 2
+    }
 	
 	// Update is called once per frame
 	void Update () {
+
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        HighlightHex(worldPos);
+
+        if (Input.GetMouseButtonUp((int)MouseButtons.LEFT))
+        {
+            if (_character == null)
+            {
+
+                _character = (Transform)Instantiate(CharacterPrefab, 
+                                                    worldPos,
+                                         			Quaternion.identity);
+            }
+        }
+
+    }
+
+    void HighlightHex(Vector3 worldPos)
+    {
         // We get mouse position
-        Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector3 hexCoords = HexCoordsUtils.WorldToHex(_hexSide, _hexHalfHeight, pos);
+        Vector3 hexCoords = HexCoordsUtils.WorldToHex(_hexSide, _hexHalfHeight, worldPos);
         Vector3 rounded = Vector3.zero;
 
         rounded = HexCoordsUtils.RoundHex(_hexSide, _hexHalfHeight, hexCoords);
@@ -81,9 +114,5 @@ public class GridGeneration : MonoBehaviour
             }
             _currentHex = newHex;
         }
-
-        // We clear the previous
-        Debug.Log(string.Format("POS: {0}, HEX: {1}, ROUNDED: {2}", pos, hexCoords, rounded));
-
     }
 }
