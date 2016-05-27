@@ -29,3 +29,10 @@ sysinfo.txt
 
 # C# Bullshit
 */obj/*
+*/bin/*
+
+# TODO(Cristian): Dll's have to be generated in the machine?
+*.mdb
+*.mdb.meta
+*.pdb
+*.pdb.meta

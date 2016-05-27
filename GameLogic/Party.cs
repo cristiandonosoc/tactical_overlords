@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GameLogic
+﻿namespace GameLogic
 {
     class Party
     {
-        // Characters on the party
-        List<Character> _characterList;
     }
 }

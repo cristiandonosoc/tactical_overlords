@@ -3,6 +3,8 @@ using System.Collections;
 
 using Assets.Scripts.Utils;
 
+using GameLogic;
+
 public class GridGeneration : MonoBehaviour
 {
     #region EDITOR
@@ -22,8 +24,12 @@ public class GridGeneration : MonoBehaviour
 
     GameObject _mainObject;
 
+    Map _map;
+
 	// Use this for initialization
 	void Start () {
+
+
         _grid = new Transform[GridWidth * GridHeight];
         SpriteRenderer spriteRenderer = HexagonPrefab.GetComponent<SpriteRenderer>();
 
