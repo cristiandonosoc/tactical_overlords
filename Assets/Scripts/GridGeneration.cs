@@ -12,8 +12,8 @@ public class GridGeneration : MonoBehaviour
     public Transform HexagonPrefab;
     public Transform CharacterPrefab;
 
-    public int GridWidth;
-    public int GridHeight;
+    public uint GridWidth;
+    public uint GridHeight;
 
     #endregion
 
@@ -29,7 +29,9 @@ public class GridGeneration : MonoBehaviour
 	// Use this for initialization
 	void Start () {
 
+        _map = new Map(GridWidth, GridHeight, 2);
 
+        // The associated prefabs with the grid
         _grid = new Transform[GridWidth * GridHeight];
         SpriteRenderer spriteRenderer = HexagonPrefab.GetComponent<SpriteRenderer>();
 
@@ -44,10 +46,12 @@ public class GridGeneration : MonoBehaviour
 
         Vector3 hexCoords = Vector3.zero;
         // We instantiate the prefabs
-        for (int hY = 0; hY < GridHeight; ++hY)
+        for (uint hY = 0; hY < GridHeight; ++hY)
         {
-            for (int hX = 0; hX < GridWidth; ++hX)
+            for (uint hX = 0; hX < GridWidth; ++hX)
             {
+                if (_map.GetHexagon(hX, hY) == null) { continue; }
+
                 hexCoords.x = hX;
                 hexCoords.y = hY;
                 Vector3 hexPosition = HexCoordsUtils.HexToWorld(_hexSide, _hexHalfHeight, hexCoords);

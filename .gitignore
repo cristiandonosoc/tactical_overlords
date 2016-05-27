@@ -32,6 +32,8 @@ sysinfo.txt
 */bin/*
 
 # TODO(Cristian): Dll's have to be generated in the machine?
+*.dll
+*.dll.meta
 *.mdb
 *.mdb.meta
 *.pdb
