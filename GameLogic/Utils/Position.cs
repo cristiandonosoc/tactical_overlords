@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 
 namespace GameLogic.Utils
 {
-    public class Size
+    class Position
     {
         #region INTERFACE
 
-        public ushort Width { get; set; }
-        public ushort Height { get; set; }
+        public short X { get; set; }
+        public short Y { get; set; }
 
         #endregion
 
-        public Size(ushort width, ushort height)
+        public Position(short x, short y)
         {
-            this.Width = width;
-            this.Height = height;
+            this.X = x;
+            this.Y = y;
         }
     }
 }

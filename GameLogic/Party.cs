@@ -8,5 +8,7 @@ namespace GameLogic
 {
     class Party
     {
+        // Characters on the party
+        List<Character> _characterList;
     }
 }

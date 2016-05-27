@@ -19,8 +19,8 @@ namespace GameLogic
         // For now, keep it simple
         Hexagon[] _grid;
 
-        // Players parties
-        Party[] _party;
+        // Players parties (with >2 players? wow, such game)
+        List<Party> _partyList;
 
         // Map size
         Size _mapSize;
@@ -31,7 +31,7 @@ namespace GameLogic
         public Map(Size mapSize, ushort partyNumber)
         {
             _grid = new Hexagon[mapSize.Width + mapSize.Height];
-            _party = new Party[partyNumber];
+            _partyList = new List<Party>();
             _mapSize = mapSize;
             _turn = 0;
         }
