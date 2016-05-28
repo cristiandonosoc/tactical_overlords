@@ -39,20 +39,16 @@ public class GridGeneration : MonoBehaviour
         Bounds spriteBounds = spriteRenderer.sprite.bounds;
         Vector3 hexagonExtents = spriteBounds.extents;
 
-        _hexSide = hexagonExtents.x;
-        _hexHalfHeight = (Mathf.Sqrt(3) * _hexSide) / 2;
-        _world = new HexWorld();
-        _world.HexSide = _hexSide;
-        _world.HexHalfHeight = _hexHalfHeight;
+        _world = new HexWorld(hexagonExtents.x);
 
         _mainObject = new GameObject("Grid");
         Transform mainTransform = _mainObject.transform;
 
         Vector3 hexCoords = Vector3.zero;
         // We instantiate the prefabs
-        for (uint hY = 0; hY < GridHeight; ++hY)
+        for (int hY = 0; hY < GridHeight; ++hY)
         {
-            for (uint hX = 0; hX < GridWidth; ++hX)
+            for (int hX = 0; hX < GridWidth; ++hX)
             {
                 if (_map.GetHexagon(hX, hY) == null) { continue; }
 

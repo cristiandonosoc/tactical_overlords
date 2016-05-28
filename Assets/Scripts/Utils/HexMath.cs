@@ -2,12 +2,6 @@
 
 namespace Assets.Scripts.Utils
 {
-    internal class HexWorld
-    {
-        internal float HexSide { get; set; }
-        internal float HexHalfHeight { get; set; }
-    }
-
     internal static class HexCoordsUtils
     {
         internal static Vector3 HexToWorld(HexWorld world, Vector3 hexCoords)
