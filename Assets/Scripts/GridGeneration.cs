@@ -1,14 +1,13 @@
 ﻿using UnityEngine;
-using System.Collections;
-
+using System.Collections.Generic;
 using Assets.Scripts.Utils;
-
 using GameLogic;
 
 public class GridGeneration : MonoBehaviour
 {
     #region EDITOR
 
+    public Transform WorldPrefab;
     public Transform HexagonPrefab;
     public Transform CharacterPrefab;
 
@@ -17,35 +16,41 @@ public class GridGeneration : MonoBehaviour
 
     #endregion
 
-    float _hexSide;
-    float _hexHalfHeight;
-
-    HexWorld _world;
-
-    Transform[] _grid;
-
-    GameObject _mainObject;
+    #region FIELDS 
 
     Map _map;
+    // This is the object that will hold the grid (is kind of a world instance)
+    // TODO(Cristian): Should this object be in the scene instead of generated?
+    GameObject _gridObject;
+    GameObject _entitiesObject;
 
-	// Use this for initialization
-	void Start () {
+    // The actual grid of prefabs
+    Transform[] _grid;
+
+    // HexWorld  -> Unity coords transformation information
+    HexWorld _world;
+
+    #endregion
+
+    // Use this for initialization
+    void Start () {
+        // We start the game instance
         _map = new Map(GridWidth, GridHeight, 2);
 
-        // The associated prefabs with the grid
-        _grid = new Transform[GridWidth * GridHeight];
+        // We obtain the hex -> world transformation
         SpriteRenderer spriteRenderer = HexagonPrefab.GetComponent<SpriteRenderer>();
-
         Bounds spriteBounds = spriteRenderer.sprite.bounds;
         Vector3 hexagonExtents = spriteBounds.extents;
-
         _world = new HexWorld(hexagonExtents.x);
 
-        _mainObject = new GameObject("Grid");
-        Transform mainTransform = _mainObject.transform;
+        // We instance the main object
+        _gridObject = new GameObject("Grid");
+        _gridObject.transform.parent = WorldPrefab;
+        Transform mainTransform = _gridObject.transform;
+        _grid = new Transform[GridWidth * GridHeight];
 
-        Vector3 hexCoords = Vector3.zero;
         // We instantiate the prefabs
+        Vector3 hexCoords = Vector3.zero;
         for (int hY = 0; hY < GridHeight; ++hY)
         {
             for (int hX = 0; hX < GridWidth; ++hX)
@@ -64,11 +69,26 @@ public class GridGeneration : MonoBehaviour
                 _grid[GridWidth * hY + hX] = t;
             }
         }
-	
+
+        // We instantiate the characters
+        _entitiesObject = new GameObject("Entities");
+        _entitiesObject.transform.parent = WorldPrefab;
+        List<Entity> entities = _map.GetEntities();
+        // We recycle hexCoords
+        hexCoords = Vector3.zero;
+        foreach(Entity entity in entities)
+        {
+            hexCoords.x = entity.Hexagon.X;
+            hexCoords.y = entity.Hexagon.Y;
+            Vector3 entityPos = HexCoordsUtils.HexToWorld(_world, hexCoords);
+            entityPos.z = -1f;
+            Transform t = (Transform)Instantiate(CharacterPrefab,
+                                                 entityPos,
+                                                 Quaternion.identity);
+            t.parent = _entitiesObject.transform;
+        }
 	}
 
-    Transform _currentHex = null;
-    Transform _character;
 
     enum MouseButtons
     {
@@ -77,23 +97,27 @@ public class GridGeneration : MonoBehaviour
         MIDDLE = 2
     }
 	
+
+    Transform _currentHex = null;
+    Transform _character;
+
 	// Update is called once per frame
 	void Update ()
     {
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         HighlightHex(worldPos);
 
-        if (Input.GetMouseButtonUp((int)MouseButtons.LEFT))
-        {
-            if (_character == null)
-            {
-
-                Vector3 charPos = HexCoordsUtils.RoundHex(HexCoordsUtils.WorldToHex(_world, worldPos));
-                _character = (Transform)Instantiate(CharacterPrefab, 
-                                                    charPos,
-                                         			Quaternion.identity);
-            }
-        }
+        //if (Input.GetMouseButtonUp((int)MouseButtons.LEFT))
+        //{
+        //    if (_character == null)
+        //    {
+        //        Vector3 charPos = HexCoordsUtils.RoundHex(HexCoordsUtils.WorldToHex(_world, worldPos));
+        //        charPos.z -= 1f;
+        //        _character = (Transform)Instantiate(CharacterPrefab, 
+        //                                            HexCoordsUtils.HexToWorld(_world, charPos),
+        //                                 			Quaternion.identity);
+        //    }
+        //}
 
     }
 
@@ -126,4 +150,18 @@ public class GridGeneration : MonoBehaviour
             _currentHex = newHex;
         }
     }
+
+    // GUI TEST
+    void OnGUI()
+    {
+        float marginRatio = 0.01f;
+        float widthRatio = 0.25f;
+        float heightRatio = 0.5f;
+
+        Rect guiRect = new Rect(marginRatio * Screen.width, marginRatio * Screen.height,
+                                widthRatio * Screen.width, heightRatio * Screen.height);
+        GUI.Box(guiRect, "TEST TEXT");
+    }
+
+
 }

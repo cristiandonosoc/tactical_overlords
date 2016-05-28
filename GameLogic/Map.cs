@@ -11,6 +11,20 @@ namespace GameLogic
         // is set. If not, an exception will be thrown.
         // Just throwing ideas around.
         internal static bool EntityAddThroughMap = false;
+
+        static uint GenerateXYKey(ushort x, ushort y)
+        {
+            // This unchecked is so that C# doesn't try to check bounds
+            // and interpret the bytes directly
+            // TODO(Cristian): Do some tests to check how this actually behaves
+            uint key;
+            unchecked
+            {
+                key = (uint)((x << 16) | y);
+            }
+            return key;
+        }
+
         #endregion
 
 
@@ -30,9 +44,20 @@ namespace GameLogic
             return _grid[_mapSize.Width * y + x];
         }
 
-        #endregion
+        public List<Entity> GetEntities()
+        {
+            var values = _characterCoordDictionary.Values;
+            // TODO(Cristian): This is crazy slow
+            List<Entity> entityList = new List<Entity>(values.Count);
+            foreach(Entity entity in values)
+            {
+                entityList.Add(entity);
+            }
 
-        #region DUMMY METHODS
+            return entityList;
+        }
+
+        #endregion
 
         // All entity adding *should* go through here
         private bool AddEntityToHexagon(int x, int y, Entity entity)
@@ -57,24 +82,10 @@ namespace GameLogic
             }
             _characterCoordDictionary.Add(key, entity);
             hex.Entity = entity;
+            entity.Hexagon = hex;
             EntityAddThroughMap = false;
             return true;
         }
-
-        static uint GenerateXYKey(ushort x, ushort y)
-        {
-            // This unchecked is so that C# doesn't try to check bounds
-            // and interpret the bytes directly
-            // TODO(Cristian): Do some tests to check how this actually behaves
-            uint key;
-            unchecked
-            {
-                key = (uint)((x << 16) | y);
-            }
-            return key;
-        }
-
-        #endregion
 
         #region MEMBERS
 
