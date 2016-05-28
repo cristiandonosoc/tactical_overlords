@@ -2,29 +2,33 @@
 
 namespace Assets.Scripts.Utils
 {
+    internal class HexWorld
+    {
+        internal float HexSide { get; set; }
+        internal float HexHalfHeight { get; set; }
+    }
+
     internal static class HexCoordsUtils
     {
-        internal static Vector3 HexToWorld(float hexSide, float hexHalfHeight,
-                                        Vector3 hexCoords)
+        internal static Vector3 HexToWorld(HexWorld world, Vector3 hexCoords)
         {
             Vector3 worldCoords = Vector3.zero;
-            worldCoords.x = (3 * hexSide * hexCoords.x) / 2;
-            worldCoords.y = (hexHalfHeight * hexCoords.x ) + (2 * hexHalfHeight * hexCoords.y);
+            worldCoords.x = (3 * world.HexSide * hexCoords.x) / 2;
+            worldCoords.y = (world.HexHalfHeight * hexCoords.x ) + 
+                            (2 * world.HexHalfHeight * hexCoords.y);
             return worldCoords;
         }
 
-        internal static Vector3 WorldToHex(float hexSide, float hexHalfHeight,
-                                           Vector3 worldCoords)
+        internal static Vector3 WorldToHex(HexWorld world, Vector3 worldCoords)
         {
             Vector3 hexCoords = Vector3.zero;
-            hexCoords.x = (2 / (3 * hexSide)) * worldCoords.x;
-            hexCoords.y = (-1 / (3 * hexSide)) * worldCoords.x + 
-                          (1 / (2 * hexHalfHeight)) * worldCoords.y;
+            hexCoords.x = (2 / (3 * world.HexSide)) * worldCoords.x;
+            hexCoords.y = (-1 / (3 * world.HexSide)) * worldCoords.x + 
+                          (1 / (2 * world.HexHalfHeight)) * worldCoords.y;
             return hexCoords;
         }
 
-        internal static Vector3 RoundHex(float hexSide, float hexHalfHeight, 
-                                      Vector3 hexCoords)
+        internal static Vector3 RoundHex(Vector3 hexCoords)
         {
             // We map into cube coordinates
             hexCoords.z = -hexCoords.x - hexCoords.y;

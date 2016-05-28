@@ -20,6 +20,8 @@ public class GridGeneration : MonoBehaviour
     float _hexSide;
     float _hexHalfHeight;
 
+    HexWorld _world;
+
     Transform[] _grid;
 
     GameObject _mainObject;
@@ -28,7 +30,6 @@ public class GridGeneration : MonoBehaviour
 
 	// Use this for initialization
 	void Start () {
-
         _map = new Map(GridWidth, GridHeight, 2);
 
         // The associated prefabs with the grid
@@ -40,6 +41,9 @@ public class GridGeneration : MonoBehaviour
 
         _hexSide = hexagonExtents.x;
         _hexHalfHeight = (Mathf.Sqrt(3) * _hexSide) / 2;
+        _world = new HexWorld();
+        _world.HexSide = _hexSide;
+        _world.HexHalfHeight = _hexHalfHeight;
 
         _mainObject = new GameObject("Grid");
         Transform mainTransform = _mainObject.transform;
@@ -54,7 +58,7 @@ public class GridGeneration : MonoBehaviour
 
                 hexCoords.x = hX;
                 hexCoords.y = hY;
-                Vector3 hexPosition = HexCoordsUtils.HexToWorld(_hexSide, _hexHalfHeight, hexCoords);
+                Vector3 hexPosition = HexCoordsUtils.HexToWorld(_world, hexCoords);
                 Transform t = (Transform)Instantiate(HexagonPrefab,
                                                      hexPosition,
                                                      Quaternion.identity);
@@ -78,8 +82,8 @@ public class GridGeneration : MonoBehaviour
     }
 	
 	// Update is called once per frame
-	void Update () {
-
+	void Update ()
+    {
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         HighlightHex(worldPos);
 
@@ -88,8 +92,9 @@ public class GridGeneration : MonoBehaviour
             if (_character == null)
             {
 
+                Vector3 charPos = HexCoordsUtils.RoundHex(HexCoordsUtils.WorldToHex(_world, worldPos));
                 _character = (Transform)Instantiate(CharacterPrefab, 
-                                                    worldPos,
+                                                    charPos,
                                          			Quaternion.identity);
             }
         }
@@ -99,10 +104,10 @@ public class GridGeneration : MonoBehaviour
     void HighlightHex(Vector3 worldPos)
     {
         // We get mouse position
-        Vector3 hexCoords = HexCoordsUtils.WorldToHex(_hexSide, _hexHalfHeight, worldPos);
+        Vector3 hexCoords = HexCoordsUtils.WorldToHex(_world, worldPos);
         Vector3 rounded = Vector3.zero;
 
-        rounded = HexCoordsUtils.RoundHex(_hexSide, _hexHalfHeight, hexCoords);
+        rounded = HexCoordsUtils.RoundHex(hexCoords);
 
         int x = (int)rounded.x;
         int y = (int)rounded.y;
