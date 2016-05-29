@@ -86,6 +86,8 @@ public class GridGeneration : MonoBehaviour
                                                  entityPos,
                                                  Quaternion.identity);
             t.parent = _entitiesObject.transform;
+            EntityScript entityScriptInstance = t.GetComponent<EntityScript>();
+            entityScriptInstance.Entity = entity;
         }
 	}
 
@@ -106,19 +108,6 @@ public class GridGeneration : MonoBehaviour
     {
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         HighlightHex(worldPos);
-
-        //if (Input.GetMouseButtonUp((int)MouseButtons.LEFT))
-        //{
-        //    if (_character == null)
-        //    {
-        //        Vector3 charPos = HexCoordsUtils.RoundHex(HexCoordsUtils.WorldToHex(_world, worldPos));
-        //        charPos.z -= 1f;
-        //        _character = (Transform)Instantiate(CharacterPrefab, 
-        //                                            HexCoordsUtils.HexToWorld(_world, charPos),
-        //                                 			Quaternion.identity);
-        //    }
-        //}
-
     }
 
     void HighlightHex(Vector3 worldPos)
@@ -150,18 +139,5 @@ public class GridGeneration : MonoBehaviour
             _currentHex = newHex;
         }
     }
-
-    // GUI TEST
-    void OnGUI()
-    {
-        float marginRatio = 0.01f;
-        float widthRatio = 0.25f;
-        float heightRatio = 0.5f;
-
-        Rect guiRect = new Rect(marginRatio * Screen.width, marginRatio * Screen.height,
-                                widthRatio * Screen.width, heightRatio * Screen.height);
-        GUI.Box(guiRect, "TEST TEXT");
-    }
-
 
 }
