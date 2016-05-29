@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using GameLogic;
+using System.Reflection;
 
 public class SceneManagerScript : MonoBehaviour
 {
@@ -48,6 +49,41 @@ public class SceneManagerScript : MonoBehaviour
         Rect guiRect = new Rect(marginRatio * Screen.width, marginRatio * Screen.height,
                                 widthRatio * Screen.width, heightRatio * Screen.height);
         GUI.Box(guiRect, "Debug Window");
+
+        if (SelectedEntity == null) { return; }
+
+        DisplayEntityInfo(guiRect);
+    }
+
+    void DisplayEntityInfo(Rect guiRect)
+    {
+        // We show the name
+        int yIndex = 0;
+        GenerateKeyValueLabel(guiRect, new Rect(10, 25 + yIndex * 15, 0, 0),
+                              "Name", SelectedEntity.Name);
+        ++yIndex;
+
+        // We show all the entities
+        Entity.EntityStats stats = SelectedEntity.Stats;
+        PropertyInfo[] properties = stats.GetType().GetProperties();
+        foreach(PropertyInfo property in properties)
+        {
+            GenerateKeyValueLabel(guiRect, new Rect(10, 25 + yIndex * 15, 0, 0),
+                                  property.Name, property.GetValue(stats, null).ToString());
+            ++yIndex;
+        }
+    }
+
+    void GenerateKeyValueLabel(Rect origin, Rect offset, string key, string value)
+    {
+        Rect pos = new Rect(origin.x + offset.x,
+                            origin.y + offset.y,
+                            origin.width + offset.width,
+                            origin.height + offset.height);
+
+        GUI.Label(pos, key);
+        pos.x += 100;
+        GUI.Label(pos, value);
     }
 
 }

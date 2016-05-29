@@ -101,7 +101,6 @@ public class GridGeneration : MonoBehaviour
 	
 
     Transform _currentHex = null;
-    Transform _character;
 
 	// Update is called once per frame
 	void Update ()
