@@ -12,19 +12,6 @@ namespace GameLogic
         // Just throwing ideas around.
         internal static bool EntityAddThroughMap = false;
 
-        static uint GenerateXYKey(ushort x, ushort y)
-        {
-            // This unchecked is so that C# doesn't try to check bounds
-            // and interpret the bytes directly
-            // TODO(Cristian): Do some tests to check how this actually behaves
-            uint key;
-            unchecked
-            {
-                key = (uint)((x << 16) | y);
-            }
-            return key;
-        }
-
         #endregion
 
 
@@ -57,6 +44,13 @@ namespace GameLogic
             return entityList;
         }
 
+        public Entity GetEntity(Hexagon hexagon)
+        {
+            if (!_characterCoordDictionary.ContainsKey(hexagon.Key)) { return null; }
+            Entity result = _characterCoordDictionary[hexagon.Key];
+            return result;
+        }
+
         #endregion
 
         // All entity adding *should* go through here
@@ -69,20 +63,19 @@ namespace GameLogic
             return result;
         }
 
-        private bool AddEntityToHexagon(Hexagon hex, Entity entity)
+        private bool AddEntityToHexagon(Hexagon hexagon, Entity entity)
         {
             // This is a valid adding path
             EntityAddThroughMap = true;
-            uint key = GenerateXYKey(hex.X, hex.Y);
             // This is an extra check, though this should not happen!
-            if (_characterCoordDictionary.ContainsKey(key))
+            if (_characterCoordDictionary.ContainsKey(hexagon.Key))
             {
                 // TODO(Cristian): Diagnose this!
                 return false;
             }
-            _characterCoordDictionary.Add(key, entity);
-            hex.Entity = entity;
-            entity.Hexagon = hex;
+            _characterCoordDictionary.Add(hexagon.Key, entity);
+            hexagon.Entity = entity;
+            entity.Hexagon = hexagon;
             EntityAddThroughMap = false;
             return true;
         }

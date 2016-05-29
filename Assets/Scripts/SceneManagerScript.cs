@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using GameLogic;
 using System.Reflection;
+using System.Collections.Generic;
 
 public class SceneManagerScript : MonoBehaviour
 {
@@ -37,7 +38,24 @@ public class SceneManagerScript : MonoBehaviour
     }
 
     // TODO(Cristian): Should we receive an EntityScript and manage all in unity-speak?
-    internal Entity SelectedEntity { get; set; }
+    private Entity _selectedEntity;
+    private List<Hexagon> _currentSelectedList;
+    internal void SetSelectedEntity(Entity entity)
+    {
+        if (_selectedEntity == entity) { return; }
+
+        _selectedEntity = entity;
+
+        GridGeneration gridManager = GetComponent<GridGeneration>();
+        gridManager.ClearGrid();
+
+        List<Hexagon> area = GameLogic.Grid_Math.Area.EntityMovementRange(gridManager.Map, _selectedEntity);
+
+        foreach(Hexagon hexagon in area)
+        {
+            gridManager.PaintHexagon(hexagon.X, hexagon.Y, Color.green);
+        }
+    }
 
     // GUI TEST
     void OnGUI()
@@ -50,21 +68,21 @@ public class SceneManagerScript : MonoBehaviour
                                 widthRatio * Screen.width, heightRatio * Screen.height);
         GUI.Box(guiRect, "Debug Window");
 
-        if (SelectedEntity == null) { return; }
+        if (_selectedEntity == null) { return; }
 
-        DisplayEntityInfo(guiRect);
+        DisplayEntityInfo(_selectedEntity, guiRect);
     }
 
-    void DisplayEntityInfo(Rect guiRect)
+    void DisplayEntityInfo(Entity entity, Rect guiRect)
     {
         // We show the name
         int yIndex = 0;
         GenerateKeyValueLabel(guiRect, new Rect(10, 25 + yIndex * 15, 0, 0),
-                              "Name", SelectedEntity.Name);
+                              "Name", entity.Name);
         ++yIndex;
 
         // We show all the entities
-        Entity.EntityStats stats = SelectedEntity.Stats;
+        Entity.EntityStats stats = entity.Stats;
         PropertyInfo[] properties = stats.GetType().GetProperties();
         foreach(PropertyInfo property in properties)
         {

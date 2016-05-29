@@ -24,6 +24,7 @@ namespace GameLogic
                 stats.CurrentHealth = random.Next(10, stats.MaxHealth);
                 stats.MaxMana = random.Next(0, 10) * 10;
                 stats.CurrentMana = random.Next(0, stats.MaxMana);
+                stats.MovementRange = random.Next(1, 4);
 
                 return stats;
             }
@@ -36,6 +37,8 @@ namespace GameLogic
             public int MaxHealth { get; internal set; }
             public int CurrentMana { get; internal set; }
             public int MaxMana { get; internal set; }
+
+            public int MovementRange { get; internal set; }
         }
 
         #region FACTORIES

@@ -19,6 +19,7 @@ public class GridGeneration : MonoBehaviour
     #region FIELDS 
 
     Map _map;
+    internal Map Map { get { return _map; } }
     // This is the object that will hold the grid (is kind of a world instance)
     // TODO(Cristian): Should this object be in the scene instead of generated?
     GameObject _gridObject;
@@ -139,6 +140,26 @@ public class GridGeneration : MonoBehaviour
             }
             _currentHex = newHex;
         }
+    }
+
+    internal void ClearGrid()
+    {
+        for (int y = 0; y < GridHeight; ++y)
+        {
+            for (int x = 0; x < GridWidth; ++x)
+            {
+                Transform t = _grid[GridWidth * y + x];
+                SpriteRenderer spriteRenderer = t.GetComponent<SpriteRenderer>();
+                spriteRenderer.color = Color.white;
+            }
+        }
+    }
+
+    internal void PaintHexagon(int x, int y, Color color)
+    {
+        Transform t = _grid[GridWidth * y + x];
+        SpriteRenderer spriteRenderer = t.GetComponent<SpriteRenderer>();
+        spriteRenderer.color = color;
     }
 
 }
