@@ -104,7 +104,7 @@ namespace GameLogic
         Dictionary<uint, Entity> _characterCoordDictionary;
 
         // Map size
-        Size _mapSize;
+        Point _mapSize;
 
         // This should be an object, with different states
         ushort _turn;
@@ -115,11 +115,11 @@ namespace GameLogic
 
         public Map(uint width, uint height, uint partyNumber)
         {
-            Size size = new Size((ushort)width, (ushort)height);
+            Point size = new Point((ushort)width, (ushort)height);
             Initialize(size, (ushort)partyNumber);
         }
 
-        public Map(Size mapSize, ushort partyNumber)
+        public Map(Point mapSize, ushort partyNumber)
         {
             Initialize(mapSize, partyNumber);
         }
@@ -127,7 +127,7 @@ namespace GameLogic
         // NOTE(Cristian): This has to a separate because you cannot call a
         // constructor from within another constructor in C# 
         // and I wanted overloaded constructors
-        private void Initialize(Size mapSize, uint partyNumber)
+        private void Initialize(Point mapSize, uint partyNumber)
         {
             _partyList = new List<Party>();
             _mapSize = mapSize;

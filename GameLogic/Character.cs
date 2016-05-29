@@ -15,7 +15,7 @@ namespace GameLogic
         public uint CurrentMana { get { return _currentMana; } }
         public uint MaxMana { get { return _maxMana; } }
 
-        public Size Position { get { return _position; } }
+        public Point Position { get { return _position; } }
 
         #endregion
 
@@ -32,10 +32,10 @@ namespace GameLogic
         ushort _movementCount;
 
         // Position on the map, should it be a Hex from the grid??
-        Size _position;
+        Point _position;
 
         public Character(String name, uint armor, uint maxHealth, uint maxMana, 
-                         ushort movementCount, Size position)
+                         ushort movementCount, Point position)
         {
             _name = name;
             _armor = armor;

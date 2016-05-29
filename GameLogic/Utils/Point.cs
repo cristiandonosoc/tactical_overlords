@@ -1,6 +1,6 @@
 ﻿namespace GameLogic.Utils
 {
-    public struct Size
+    public struct Point
     {
         #region INTERFACE
 
@@ -30,7 +30,7 @@
         private ushort _x;
         private ushort _y;
 
-        public Size(ushort width, ushort height)
+        public Point(ushort width, ushort height)
         {
             _x = width;
             _y = height;

@@ -5,7 +5,7 @@ namespace GameLogic
     {
         #region INTERFACE
 
-        public Size Size { get; private set; }
+        public Point Size { get; private set; }
         public ushort X { get { return Size.Width; } }
         public ushort Y { get { return Size.Height; } }
 
@@ -30,7 +30,7 @@ namespace GameLogic
 
         internal Hexagon(ushort x, ushort y)
         {
-            Size = new Size(x, y);
+            Size = new Point(x, y);
         }
     }
 }
