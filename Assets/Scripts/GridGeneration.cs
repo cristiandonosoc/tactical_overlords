@@ -64,6 +64,7 @@ public class GridGeneration : MonoBehaviour
                                                      hexPosition,
                                                      Quaternion.identity);
                 t.parent = mainTransform;
+                t.gameObject.name = string.Format("{0}_{1}", hX, hY);
 
                 // We store it in the array
                 _grid[GridWidth * hY + hX] = t;
@@ -86,6 +87,7 @@ public class GridGeneration : MonoBehaviour
                                                  entityPos,
                                                  Quaternion.identity);
             t.parent = _entitiesObject.transform;
+            t.gameObject.name = entity.Name;
             EntityScript entityScriptInstance = t.GetComponent<EntityScript>();
             entityScriptInstance.Entity = entity;
         }
