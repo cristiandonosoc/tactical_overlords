@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using GameLogic.Utils;
 
 namespace GameLogic
@@ -20,7 +15,7 @@ namespace GameLogic
         public uint CurrentMana { get { return _currentMana; } }
         public uint MaxMana { get { return _maxMana; } }
 
-        public Position Position { get { return _position; } }
+        public Size Position { get { return _position; } }
 
         #endregion
 
@@ -37,9 +32,10 @@ namespace GameLogic
         ushort _movementCount;
 
         // Position on the map, should it be a Hex from the grid??
-        Position _position;
+        Size _position;
 
-        public Character(String name, uint armor, uint maxHealth, uint maxMana, ushort movementCount, Position position)
+        public Character(String name, uint armor, uint maxHealth, uint maxMana, 
+                         ushort movementCount, Size position)
         {
             _name = name;
             _armor = armor;
