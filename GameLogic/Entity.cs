@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GameLogic.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,12 +11,31 @@ namespace GameLogic
     {
         public class EntityStats
         {
+
+            #region FACTORIES
+            internal static EntityStats CreateDummyStats()
+            {
+                EntityStats stats = new EntityStats();
+
+                Random random = RandomSingleton.GetInstance();
+                // We create random values
+                stats.Armor = random.Next(0, 5);
+                stats.MaxHealth = random.Next(5, 25) * 50;
+                stats.CurrentHealth = random.Next(10, stats.MaxHealth);
+                stats.MaxMana = random.Next(0, 10) * 10;
+                stats.CurrentMana = random.Next(0, stats.MaxMana);
+
+                return stats;
+            }
+
+            #endregion
+
             // Basic char stats
-            public int Armor { get; set; }
-            public int CurrentHealth { get; set; }
-            public int MaxHealth { get; set; }
-            public int CurrentMana { get; set; }
-            public int MaxMana { get; set; }
+            public int Armor { get; internal set; }
+            public int CurrentHealth { get; internal set; }
+            public int MaxHealth { get; internal set; }
+            public int CurrentMana { get; internal set; }
+            public int MaxMana { get; internal set; }
         }
 
         #region FACTORIES
@@ -24,10 +44,11 @@ namespace GameLogic
         internal static Entity CreateDummyEntity()
         {
             // TODO(Cristian): We create random entity stats?
-            EntityStats dummyStats = new EntityStats();
+
             string name = string.Format("DUMMY_ENTITY_{0}", DummyEntityCount);
             ++DummyEntityCount;
-            Entity entity = new Entity(name, dummyStats);
+            Entity entity = new Entity(name,
+                                       EntityStats.CreateDummyStats());
             return entity;
         }
 
