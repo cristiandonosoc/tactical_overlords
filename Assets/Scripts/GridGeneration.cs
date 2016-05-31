@@ -40,9 +40,9 @@ public class GridGeneration : MonoBehaviour
 
         // We obtain the hex -> world transformation
         SpriteRenderer spriteRenderer = HexagonPrefab.GetComponent<SpriteRenderer>();
-        Bounds spriteBounds = spriteRenderer.sprite.bounds;
-        Vector3 hexagonExtents = spriteBounds.extents;
-        _world = new HexWorld(hexagonExtents.x);
+
+        Rect spriteRect = spriteRenderer.sprite.rect;
+        _world = new HexWorld(spriteRect.width / 2);
 
         // We instance the main object
         _gridObject = new GameObject("Grid");
@@ -63,7 +63,7 @@ public class GridGeneration : MonoBehaviour
                 Vector3 hexPosition = HexCoordsUtils.HexToWorld(_world, hexCoords);
                 Transform t = (Transform)Instantiate(HexagonPrefab,
                                                      hexPosition,
-                                                     Quaternion.identity);
+                                                     HexagonPrefab.localRotation);
                 t.parent = mainTransform;
                 t.gameObject.name = string.Format("{0}_{1}", hX, hY);
 
