@@ -26,7 +26,7 @@ public class GridGeneration : MonoBehaviour
     GameObject _entitiesObject;
 
     // The actual grid of prefabs
-    Transform[] _grid;
+    HexagonScript[] _grid;
 
     // HexWorld  -> Unity coords transformation information
     HexWorld _world;
@@ -48,7 +48,7 @@ public class GridGeneration : MonoBehaviour
         _gridObject = new GameObject("Grid");
         _gridObject.transform.parent = WorldPrefab;
         Transform mainTransform = _gridObject.transform;
-        _grid = new Transform[GridWidth * GridHeight];
+        _grid = new HexagonScript[GridWidth * GridHeight];
 
         // We instantiate the prefabs
         Vector3 hexCoords = Vector3.zero;
@@ -64,11 +64,12 @@ public class GridGeneration : MonoBehaviour
                 Transform t = (Transform)Instantiate(HexagonPrefab,
                                                      hexPosition,
                                                      HexagonPrefab.localRotation);
+                HexagonScript hexagonScript = t.GetComponent<HexagonScript>();
                 t.parent = mainTransform;
                 t.gameObject.name = string.Format("{0}_{1}", hX, hY);
 
                 // We store it in the array
-                _grid[GridWidth * hY + hX] = t;
+                _grid[GridWidth * hY + hX] = hexagonScript;
             }
         }
 
@@ -103,7 +104,7 @@ public class GridGeneration : MonoBehaviour
     }
 	
 
-    Transform _currentHex = null;
+    HexagonScript _currentHex = null;
 
 	// Update is called once per frame
 	void Update ()
@@ -122,21 +123,22 @@ public class GridGeneration : MonoBehaviour
 
         int x = (int)rounded.x;
         int y = (int)rounded.y;
-        Transform newHex = null;
+        HexagonScript newHex = null;
         if ((x >= 0) && (x < GridWidth) && 
             (y >= 0) && (y < GridHeight))
         {
             newHex = _grid[GridWidth * y + x];
-            SpriteRenderer spriteRenderer = newHex.GetComponent<SpriteRenderer>();
-            spriteRenderer.color = Color.red;
         }
 
         if (_currentHex != newHex)
         {
+            if (newHex != null)
+            {
+                newHex.ChangeColor(Color.red);
+            }
             if (_currentHex != null)
             {
-                SpriteRenderer currentRenderer = _currentHex.GetComponent<SpriteRenderer>();
-                currentRenderer.color = Color.white;
+                _currentHex.RevertColor();
             }
             _currentHex = newHex;
         }
@@ -148,18 +150,16 @@ public class GridGeneration : MonoBehaviour
         {
             for (int x = 0; x < GridWidth; ++x)
             {
-                Transform t = _grid[GridWidth * y + x];
-                SpriteRenderer spriteRenderer = t.GetComponent<SpriteRenderer>();
-                spriteRenderer.color = Color.white;
+                HexagonScript hex = _grid[GridWidth * y + x];
+                hex.ChangeColor(Color.white);
             }
         }
     }
 
     internal void PaintHexagon(int x, int y, Color color)
     {
-        Transform t = _grid[GridWidth * y + x];
-        SpriteRenderer spriteRenderer = t.GetComponent<SpriteRenderer>();
-        spriteRenderer.color = color;
+        HexagonScript hex = _grid[GridWidth * y + x];
+        hex.ChangeColor(color, color);
     }
 
 }

@@ -39,7 +39,6 @@ public class SceneManagerScript : MonoBehaviour
 
     // TODO(Cristian): Should we receive an EntityScript and manage all in unity-speak?
     private Entity _selectedEntity;
-    private List<Hexagon> _currentSelectedList;
     internal void SetSelectedEntity(Entity entity)
     {
         if (_selectedEntity == entity) { return; }
