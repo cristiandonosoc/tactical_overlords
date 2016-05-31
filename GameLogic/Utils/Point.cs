@@ -30,10 +30,10 @@
         private ushort _x;
         private ushort _y;
 
-        public Point(ushort width, ushort height)
+        public Point(ushort x, ushort y)
         {
-            _x = width;
-            _y = height;
+            _x = x;
+            _y = y;
         }
     }
 }
