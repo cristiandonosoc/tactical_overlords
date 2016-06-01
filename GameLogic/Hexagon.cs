@@ -3,6 +3,39 @@ namespace GameLogic
 {
     public class Hexagon
     {
+        #region HELPER
+
+        // TODO(Cristian): Should this neighbours be stored directly in each
+        // hexagon? The direct lookup seems ok... (not even a hash table lookup)
+        /// <summary>
+        /// Gets the neighbours of a hexagon
+        /// </summary>
+        /// <param name="context">The map where the hexagon resides</param>
+        /// <param name="hexagon">The hexagon to which to get the neighbours</param>
+        /// <param name="resultBuffer">
+        /// Stores the result in a pre-allocated buffer
+        /// The result is as follows: [SEE DEFINITION OF METHOD]
+        ///             ___
+        ///         ___/   \___          
+        ///        /   \_0_/   \     
+        ///        \_5_/   \_1_/                 
+        ///        /   \___/   \     
+        ///        \_4_/   \_2_/                 
+        ///            \_3_/
+        /// </param>
+        public static void GetHexagonNeighbours(Map context, Hexagon hexagon,
+                                                 ref Hexagon[] resultBuffer)
+        {
+            resultBuffer[0] = context.GetHexagon(hexagon.X    , hexagon.Y + 1);
+            resultBuffer[1] = context.GetHexagon(hexagon.X + 1, hexagon.Y    );
+            resultBuffer[2] = context.GetHexagon(hexagon.X + 1, hexagon.Y - 1);
+            resultBuffer[3] = context.GetHexagon(hexagon.X    , hexagon.Y - 1);
+            resultBuffer[4] = context.GetHexagon(hexagon.X - 1, hexagon.Y + 0);
+            resultBuffer[5] = context.GetHexagon(hexagon.X - 1, hexagon.Y + 1);
+        }
+
+        #endregion
+
         #region INTERFACE
 
         public Point Size { get; private set; }
