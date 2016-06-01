@@ -36,7 +36,7 @@ namespace GameLogic
             var values = _characterCoordDictionary.Values;
             // TODO(Cristian): This is crazy slow
             List<Entity> entityList = new List<Entity>(values.Count);
-            foreach(Entity entity in values)
+            foreach (Entity entity in values)
             {
                 entityList.Add(entity);
             }
@@ -79,6 +79,8 @@ namespace GameLogic
             EntityAddThroughMap = false;
             return true;
         }
+
+        public Point Size { get { return _mapSize; } }
 
         #region MEMBERS
 

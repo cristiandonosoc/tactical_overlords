@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="Entity.cs" />
     <Compile Include="Grid Math\Area.cs" />
+    <Compile Include="Grid Math\Path.cs" />
     <Compile Include="Hexagon.cs" />
     <Compile Include="Intent.cs" />
     <Compile Include="Map.cs" />
