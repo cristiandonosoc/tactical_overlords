@@ -41,7 +41,7 @@
     <Compile Include="Entity.cs" />
     <Compile Include="Grid Math\Area.cs" />
     <Compile Include="Hexagon.cs" />
-    <Compile Include="Action.cs" />
+    <Compile Include="Intent.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Party.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
