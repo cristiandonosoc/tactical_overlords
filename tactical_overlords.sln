@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tactical_overlords.CSharp", "tactical_overlords.CSharp.csproj", "{07A0311C-86AF-FC08-716D-10F30BFEE311}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLogic", "GameLogic\GameLogic.csproj", "{057A392E-70CB-4CD6-9BFC-BC13EDCD0AC4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{07A0311C-86AF-FC08-716D-10F30BFEE311}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07A0311C-86AF-FC08-716D-10F30BFEE311}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07A0311C-86AF-FC08-716D-10F30BFEE311}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07A0311C-86AF-FC08-716D-10F30BFEE311}.Release|Any CPU.Build.0 = Release|Any CPU
+		{057A392E-70CB-4CD6-9BFC-BC13EDCD0AC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{057A392E-70CB-4CD6-9BFC-BC13EDCD0AC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{057A392E-70CB-4CD6-9BFC-BC13EDCD0AC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{057A392E-70CB-4CD6-9BFC-BC13EDCD0AC4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
