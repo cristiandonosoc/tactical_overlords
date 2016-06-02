@@ -19,6 +19,11 @@ namespace GameLogic.Grid_Math
 
         public static bool GetPath(Map context, List<Hexagon> resultList, Hexagon start, Hexagon goal)
         {
+            if (start == goal)
+            {
+                return false;
+            }
+
             // Memory hog, but could be faster
             int size = context.Size.Width * context.Size.Height;
             bool[] closedMap = new bool[size];
@@ -147,7 +152,9 @@ namespace GameLogic.Grid_Math
             // This heuristic overestimates a little in many cases (off by one mainly).
             // This will make the path-finder a little more aggresive towards the goal,
             // which I think is good actually
-            int result = Math.Abs(end.X - start.X) + Math.Abs(end.Y - start.Y);
+            int absX = Math.Abs(end.X - start.X);
+            int absY = Math.Abs(end.Y - start.Y);
+            int result = (absX * absX) + (absY * absY);
             return result;
         }
 
