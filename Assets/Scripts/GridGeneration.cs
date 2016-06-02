@@ -117,9 +117,7 @@ public class GridGeneration : MonoBehaviour
     {
         // We get mouse position
         Vector3 hexCoords = HexCoordsUtils.WorldToHex(_world, worldPos);
-        Vector3 rounded = Vector3.zero;
-
-        rounded = HexCoordsUtils.RoundHex(hexCoords);
+        Vector3 rounded = HexCoordsUtils.RoundHex(hexCoords);
 
         int x = (int)rounded.x;
         int y = (int)rounded.y;
@@ -132,15 +130,18 @@ public class GridGeneration : MonoBehaviour
 
         if (_currentHex != newHex)
         {
+            _currentHex = newHex;
+            ClearGrid();
             if (newHex != null)
             {
-                newHex.ChangeColor(Color.red);
+                List<Hexagon> path = new List<Hexagon>();
+                GameLogic.Grid_Math.Path.GetPath(_map, path, 0, 0, x, y);
+
+                foreach (Hexagon hexagon in path)
+                {
+                    PaintHexagon(hexagon.X, hexagon.Y, Color.red);
+                }
             }
-            if (_currentHex != null)
-            {
-                _currentHex.RevertColor();
-            }
-            _currentHex = newHex;
         }
     }
 

@@ -33,6 +33,27 @@ namespace GameLogic
             resultBuffer[4] = context.GetHexagon(hexagon.X - 1, hexagon.Y + 0);
             resultBuffer[5] = context.GetHexagon(hexagon.X - 1, hexagon.Y + 1);
         }
+        
+        public static int GenerateIndex(Map context, Hexagon hexagon)
+        {
+            int result = context.Size.Width * hexagon.Y + hexagon.X;
+            return result;
+        }
+
+        public static uint GenerateXYKey(ushort x, ushort y)
+        {
+            // This unchecked is so that C# doesn't try to check bounds
+            // and interpret the bytes directly
+            // TODO(Cristian): Do some tests to check how this actually behaves
+            uint key;
+            unchecked
+            {
+                key = (uint)((x << 16) | y);
+            }
+            return key;
+        }
+
+
 
         #endregion
 
@@ -68,19 +89,7 @@ namespace GameLogic
             Key = GenerateXYKey(x, y);
         }
 
-        static uint GenerateXYKey(ushort x, ushort y)
-        {
-            // This unchecked is so that C# doesn't try to check bounds
-            // and interpret the bytes directly
-            // TODO(Cristian): Do some tests to check how this actually behaves
-            uint key;
-            unchecked
-            {
-                key = (uint)((x << 16) | y);
-            }
-            return key;
-        }
-
+        // For easier debugging/watching in Visual Studio
         public override string ToString()
         {
             return string.Format("{0}_{1}", this.X, this.Y);
