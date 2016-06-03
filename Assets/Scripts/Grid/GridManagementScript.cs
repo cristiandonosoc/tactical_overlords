@@ -22,6 +22,11 @@ internal class GridManagementScript : MonoBehaviour
     {
         _sceneManager = SceneManagerScript.GetInstance();
         GenerateGrid();
+
+        if (!_validGridSetup)
+        {
+            throw new System.InvalidProgramException("Wrong Grid Setup!");
+        }
     }
 
     private void GenerateGrid()

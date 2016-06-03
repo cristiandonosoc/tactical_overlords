@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using GameLogic;
-using System.Reflection;
 using System.Collections.Generic;
 using Assets.Scripts.Utils;
 
@@ -27,7 +26,6 @@ public class SceneManagerScript : MonoBehaviour
 
     #region EDITOR
 
-    public Transform WorldPrefab;
     public Transform HexagonPrefab;
     public Transform CharacterPrefab;
 
@@ -38,15 +36,22 @@ public class SceneManagerScript : MonoBehaviour
 
     internal Map Map { get; private set; }
     internal HexWorld HexWorld { get; private set; }
+    internal Transform WorldObject { get; private set; }
 
     private GridManagementScript _gridManager;
     private EntitiesManagementScript _entitiesManager;
+
+    #region SETUP
 
     // Use this for initialization
     void Start()
     {
         // We set the static instance
         _instance = this;
+
+        // We get the world
+        // TODO(Cristian): See the best way to unhardcode this
+        WorldObject = GameObject.Find("World").transform;
 
         // We get the other components
         _gridManager = (GridManagementScript)FindObjectOfType(typeof(GridManagementScript));
@@ -73,75 +78,23 @@ public class SceneManagerScript : MonoBehaviour
         HexWorld = new HexWorld(spriteRect.width / 2);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+    #endregion
 
     // TODO(Cristian): Should we receive an EntityScript and manage all in unity-speak?
-    private Entity _selectedEntity;
+    internal Entity SelectedEntity { get; private set; }
     internal void SetSelectedEntity(Entity entity)
     {
-        if (_selectedEntity == entity) { return; }
+        if (SelectedEntity == entity) { return; }
 
-        _selectedEntity = entity;
+        SelectedEntity = entity;
 
         _gridManager.ClearGrid();
 
-        List<Hexagon> area = GameLogic.Grid_Math.Area.EntityMovementRange(Map, _selectedEntity);
+        List<Hexagon> area = GameLogic.Grid_Math.Area.EntityMovementRange(Map, SelectedEntity);
 
         foreach(Hexagon hexagon in area)
         {
             _gridManager.PaintHexagon(hexagon.X, hexagon.Y, Color.green);
         }
     }
-
-    // GUI TEST
-    void OnGUI()
-    {
-        float marginRatio = 0.01f;
-        float widthRatio = 0.25f;
-        float heightRatio = 0.5f;
-
-        Rect guiRect = new Rect(marginRatio * Screen.width, marginRatio * Screen.height,
-                                widthRatio * Screen.width, heightRatio * Screen.height);
-        GUI.Box(guiRect, "Debug Window");
-
-        if (_selectedEntity == null) { return; }
-
-        DisplayEntityInfo(_selectedEntity, guiRect);
-    }
-
-    void DisplayEntityInfo(Entity entity, Rect guiRect)
-    {
-        // We show the name
-        int yIndex = 0;
-        GenerateKeyValueLabel(guiRect, new Rect(10, 25 + yIndex * 15, 0, 0),
-                              "Name", entity.Name);
-        ++yIndex;
-
-        // We show all the entities
-        Entity.EntityStats stats = entity.Stats;
-        PropertyInfo[] properties = stats.GetType().GetProperties();
-        foreach(PropertyInfo property in properties)
-        {
-            GenerateKeyValueLabel(guiRect, new Rect(10, 25 + yIndex * 15, 0, 0),
-                                  property.Name, property.GetValue(stats, null).ToString());
-            ++yIndex;
-        }
-    }
-
-    void GenerateKeyValueLabel(Rect origin, Rect offset, string key, string value)
-    {
-        Rect pos = new Rect(origin.x + offset.x,
-                            origin.y + offset.y,
-                            origin.width + offset.width,
-                            origin.height + offset.height);
-
-        GUI.Label(pos, key);
-        pos.x += 100;
-        GUI.Label(pos, value);
-    }
-
 }

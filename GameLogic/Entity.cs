@@ -24,7 +24,7 @@ namespace GameLogic
                 stats.CurrentHealth = random.Next(10, stats.MaxHealth);
                 stats.MaxMana = random.Next(0, 10) * 10;
                 stats.CurrentMana = random.Next(0, stats.MaxMana);
-                stats.MovementRange = random.Next(1, 4);
+                stats.MovementRange = random.Next(1, 4) + 5;
 
                 return stats;
             }

@@ -14,7 +14,7 @@ internal static class GridGeneration
         uint gridHeight = sceneManager.GridHeight;
 
         // We instance the main object
-        Transform worldObject = sceneManager.WorldPrefab;
+        Transform worldObject = sceneManager.WorldObject;
         GridManagementScript gridManager = worldObject.GetComponentInChildren<GridManagementScript>();
 
         Transform mainTransform = gridManager.transform;
@@ -51,7 +51,7 @@ internal static class GridGeneration
     internal static void GenerateEntities(SceneManagerScript sceneManager)
     {
         // We instantiate the characters
-        Transform worldObject = sceneManager.WorldPrefab;
+        Transform worldObject = sceneManager.WorldObject;
         EntitiesManagementScript entitiesObject = worldObject.GetComponentInChildren<EntitiesManagementScript>();
         List<Entity> entities = sceneManager.Map.GetEntities();
 
