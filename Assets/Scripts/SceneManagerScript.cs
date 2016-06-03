@@ -2,6 +2,7 @@
 using GameLogic;
 using System.Reflection;
 using System.Collections.Generic;
+using Assets.Scripts.Utils;
 
 public class SceneManagerScript : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class SceneManagerScript : MonoBehaviour
         if (_instance == null)
         {
             // TODO(Cristian): Create instance here? Diagnose?
-            string message = "No Scene Manager Found!";
+            string message = "No Scene Manager Found! (Is correct order set in scene?)";
             throw new System.InvalidProgramException(message);
         }
 
@@ -24,11 +25,52 @@ public class SceneManagerScript : MonoBehaviour
 
     #endregion
 
+    #region EDITOR
+
+    public Transform WorldPrefab;
+    public Transform HexagonPrefab;
+    public Transform CharacterPrefab;
+
+    public uint GridWidth;
+    public uint GridHeight;
+
+    #endregion
+
+    internal Map Map { get; private set; }
+    internal HexWorld HexWorld { get; private set; }
+
+    private GridManagementScript _gridManager;
+    private EntitiesManagementScript _entitiesManager;
+
     // Use this for initialization
     void Start()
     {
         // We set the static instance
         _instance = this;
+
+        // We get the other components
+        _gridManager = (GridManagementScript)FindObjectOfType(typeof(GridManagementScript));
+        _entitiesManager = (EntitiesManagementScript)FindObjectOfType(typeof(EntitiesManagementScript));
+
+        GenerateMapData();
+    }
+
+    private void GenerateMapData()
+    {
+        Map = new Map(GridWidth, GridHeight, 2);
+        GenerateHexWorld();
+        GridGeneration.GenerateEntities(this);
+    }
+
+    private void GenerateHexWorld()
+    {
+        // We obtain the hex -> world transformation
+        // This will be used throughout the world transformation,
+        // so SceneManager, as a global singleton, will hold a reference to it.
+        Transform hexagonPrefab = HexagonPrefab;
+        SpriteRenderer spriteRenderer = hexagonPrefab.GetComponent<SpriteRenderer>();
+        Rect spriteRect = spriteRenderer.sprite.rect;
+        HexWorld = new HexWorld(spriteRect.width / 2);
     }
 
     // Update is called once per frame
@@ -45,14 +87,13 @@ public class SceneManagerScript : MonoBehaviour
 
         _selectedEntity = entity;
 
-        GridGeneration gridManager = GetComponent<GridGeneration>();
-        gridManager.ClearGrid();
+        _gridManager.ClearGrid();
 
-        List<Hexagon> area = GameLogic.Grid_Math.Area.EntityMovementRange(gridManager.Map, _selectedEntity);
+        List<Hexagon> area = GameLogic.Grid_Math.Area.EntityMovementRange(Map, _selectedEntity);
 
         foreach(Hexagon hexagon in area)
         {
-            gridManager.PaintHexagon(hexagon.X, hexagon.Y, Color.green);
+            _gridManager.PaintHexagon(hexagon.X, hexagon.Y, Color.green);
         }
     }
 
