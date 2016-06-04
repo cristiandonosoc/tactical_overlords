@@ -3,7 +3,7 @@ using GameLogic;
 using System.Collections.Generic;
 using Assets.Scripts.Utils;
 
-public class SceneManagerScript : MonoBehaviour
+public partial class SceneManagerScript : MonoBehaviour
 {
     #region SINGLETON
 
@@ -58,6 +58,7 @@ public class SceneManagerScript : MonoBehaviour
         _entitiesManager = (EntitiesManagementScript)FindObjectOfType(typeof(EntitiesManagementScript));
 
         GenerateMapData();
+        SetupStateMachine();
     }
 
     private void GenerateMapData()
@@ -85,16 +86,7 @@ public class SceneManagerScript : MonoBehaviour
     internal void SetSelectedEntity(Entity entity)
     {
         if (SelectedEntity == entity) { return; }
-
         SelectedEntity = entity;
-
-        _gridManager.ClearGrid();
-
-        List<Hexagon> area = GameLogic.Grid_Math.Area.EntityMovementRange(Map, SelectedEntity);
-
-        foreach(Hexagon hexagon in area)
-        {
-            _gridManager.PaintHexagon(hexagon.X, hexagon.Y, Color.green);
-        }
+        _stateMachine.ChangeState(States.Selected, MonsterLove.StateMachine.StateTransition.ForceSafe);
     }
 }

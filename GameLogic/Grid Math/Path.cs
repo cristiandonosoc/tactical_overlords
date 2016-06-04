@@ -8,20 +8,52 @@ namespace GameLogic.Grid_Math
     public static class Path
     {
 
-        public static bool GetPath(Map context, List<Hexagon> resultList,
-                                   int startX, int startY, int endX, int endY)
+        /// <summary>
+        /// Obtains the shortest path between two hexagons. Uses A* underneath
+        /// </summary>
+        /// <param name="context">The Map to be searched</param>
+        /// <param name="resultList">List to store the path in</param>
+        /// <param name="filterList">The set of hexagons to limit the search to. Can be null</param>
+        /// <param name="startX">X coord of start hexagon</param>
+        /// <param name="startY">Y coord of start hexagon</param>
+        /// <param name="goalX">X coord of goal hexagon</param>
+        /// <param name="endY">Y coord of goal hexagon</param>
+        /// <returns>Whether a valid path could be found</returns>
+        public static bool GetPath(Map context, List<Hexagon> resultList, HashSet<uint> filterList,
+                                   int startX, int startY, int goalX, int goalY)
         {
             Hexagon start = context.GetHexagon(startX, startY);
-            Hexagon end = context.GetHexagon(endX, endY);
-            bool result = GetPath(context, resultList, start, end);
+            Hexagon end = context.GetHexagon(goalX, goalY);
+            bool result = GetPath(context, resultList, filterList, start, end);
             return result;
         }
 
-        public static bool GetPath(Map context, List<Hexagon> resultList, Hexagon start, Hexagon goal)
+        /// <summary>
+        /// Obtains the shortest path between two hexagons. Uses A* underneath
+        /// </summary>
+        /// <param name="context">The Map to be searched</param>
+        /// <param name="resultList">List to store the path in</param>
+        /// <param name="filterList">The set of hexagons to limit the search to. Can be null</param>
+        /// <param name="start">start hexagon</param>
+        /// <param name="goal">goal hexagon</param>
+        /// <returns>Whether a valid path could be found</returns>
+        public static bool GetPath(Map context, List<Hexagon> resultList, HashSet<uint> filterSet,
+                                   Hexagon start, Hexagon goal)
         {
-            if (start == goal)
+            if ((start == null) ||
+                (goal == null) ||
+                (start == goal))
             {
                 return false;
+            }
+
+            if (filterSet != null)
+            {
+                if ((!filterSet.Contains(start.Key)) ||
+                    (!filterSet.Contains(goal.Key)))
+                {
+                    return false;
+                }
             }
 
             // Memory hog, but could be faster
@@ -65,6 +97,13 @@ namespace GameLogic.Grid_Math
                 foreach (Hexagon neighbour in neighbours)
                 {
                     if (neighbour == null) { continue; }
+
+                    // We see if it belongs to the filter set
+                    if ((filterSet != null) &&
+                        (!filterSet.Contains(neighbour.Key)))
+                    {
+                        continue;
+                    }
 
                     // If the node is already visited, we ignore it
                     int neighbourIndex = Hexagon.GenerateIndex(context, neighbour);

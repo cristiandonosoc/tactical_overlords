@@ -1,5 +1,4 @@
-﻿using Assets.Scripts.Utils;
-using GameLogic;
+﻿using GameLogic;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -49,45 +48,11 @@ internal class GridManagementScript : MonoBehaviour
         MIDDLE = 2
     }
 
-    HexagonScript _currentHex = null;
-
-	// Update is called once per frame
-	void Update ()
+    internal void PaintList(List<Hexagon> path, Color color)
     {
-        if (!_validGridSetup) { return; }
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        HighlightHex(worldPos);
-    }
-
-    void HighlightHex(Vector3 worldPos)
-    {
-        // We get mouse position
-        Vector3 hexCoords = HexCoordsUtils.WorldToHex(_sceneManager.HexWorld, worldPos);
-        Vector3 rounded = HexCoordsUtils.RoundHex(hexCoords);
-
-        int x = (int)rounded.x;
-        int y = (int)rounded.y;
-        HexagonScript newHex = null;
-        if ((x >= 0) && (x < _gridWidth) && 
-            (y >= 0) && (y < _gridHeight))
+        foreach (Hexagon hexagon in path)
         {
-            newHex = _grid[_gridWidth * y + x];
-        }
-
-        if (_currentHex != newHex)
-        {
-            _currentHex = newHex;
-            ClearGrid();
-            if (newHex != null)
-            {
-                List<Hexagon> path = new List<Hexagon>();
-                GameLogic.Grid_Math.Path.GetPath(_sceneManager.Map, path, 0, 0, x, y);
-
-                foreach (Hexagon hexagon in path)
-                {
-                    PaintHexagon(hexagon.X, hexagon.Y, Color.red);
-                }
-            }
+            PaintHexagon(hexagon, color);
         }
     }
 
@@ -98,15 +63,25 @@ internal class GridManagementScript : MonoBehaviour
             for (int x = 0; x < _gridWidth; ++x)
             {
                 HexagonScript hex = _grid[_gridWidth * y + x];
-                hex.ChangeColor(Color.white);
+                hex.ChangeColor(Color.white, Color.white);
             }
         }
     }
 
     internal void PaintHexagon(int x, int y, Color color)
     {
+        if ((x < 0) || (x >= _gridWidth) ||
+            (y < 0) || (y >= _gridHeight))
+        {
+            return;
+        }
         HexagonScript hex = _grid[_gridWidth * y + x];
         hex.ChangeColor(color, color);
+    }
+
+    internal void PaintHexagon(Hexagon hexagon, Color color)
+    {
+        PaintHexagon(hexagon.X, hexagon.Y, color);
     }
 
 

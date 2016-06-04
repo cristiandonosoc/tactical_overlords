@@ -52,5 +52,12 @@ namespace Assets.Scripts.Utils
 
             return roundedCoords;
         }
+
+        internal static Vector3 GetHexRoundedWorldPosition(HexWorld context, Vector3 worldPos)
+        {
+            Vector3 hexCoords = WorldToHex(context, worldPos);
+            Vector3 rounded = HexCoordsUtils.RoundHex(hexCoords);
+            return rounded;
+        }
     }
 }

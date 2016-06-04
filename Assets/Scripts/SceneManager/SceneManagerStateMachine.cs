@@ -2,6 +2,7 @@
 using MonsterLove.StateMachine;
 using GameLogic;
 using System.Collections.Generic;
+using Assets.Scripts.Utils;
 
 public partial class SceneManagerScript : MonoBehaviour
 {
@@ -34,13 +35,15 @@ public partial class SceneManagerScript : MonoBehaviour
     #endregion SELECTED STATE
 
     List<Hexagon> _area;
+    HashSet<uint> _areaSet;
     void Selected_Enter()
     {
         Debug.Log("ENTERING SELECTED STATE");
         _area = GameLogic.Grid_Math.Area.EntityMovementRange(Map, SelectedEntity);
-        foreach(Hexagon hexagon in area)
+        _areaSet = new HashSet<uint>();
+        foreach (Hexagon hexagon in _area)
         {
-            _gridManager.PaintHexagon(hexagon.X, hexagon.Y, Color.green);
+            _areaSet.Add(hexagon.Key);
         }
     }
 
@@ -51,15 +54,21 @@ public partial class SceneManagerScript : MonoBehaviour
         _gridManager.PaintList(_area, Color.green);
         // We highlight the path
 
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 roundedCoords = HexCoordsUtils.GetHexRoundedWorldPosition(HexWorld, mousePos);
 
+        // We get the path
+        List<Hexagon> path = new List<Hexagon>();
+        GameLogic.Grid_Math.Path.GetPath(Map, path, _areaSet,
+                                         SelectedEntity.Hexagon.X, SelectedEntity.Hexagon.Y,
+                                         (int)roundedCoords.x, (int)roundedCoords.y);
+
+        _gridManager.PaintList(path, Color.red);
     }
 
     void Selected_Exit()
     {
         Debug.Log("EXITING SELECTED STATE");
-        _gridManager.ClearGrid();
     }
 
     #endregion STATE MACHINE
