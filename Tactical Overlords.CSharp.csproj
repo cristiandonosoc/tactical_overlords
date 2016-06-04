@@ -66,11 +66,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\MonsterLove\StateMachine\StateMachine.cs" />
+    <Compile Include="Assets\MonsterLove\StateMachine\StateMachineRunner.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraMovement.cs" />
+    <Compile Include="Assets\Scripts\Entity\EntitiesManagementScript.cs" />
     <Compile Include="Assets\Scripts\Entity\EntityScript.cs" />
+    <Compile Include="Assets\Scripts\Grid\GridManagementScript.cs" />
     <Compile Include="Assets\Scripts\GridGeneration.cs" />
     <Compile Include="Assets\Scripts\Hexagon\HexagonScript.cs" />
-    <Compile Include="Assets\Scripts\SceneManagerScript.cs" />
+    <Compile Include="Assets\Scripts\SceneManager\SceneManagerGUI.cs" />
+    <Compile Include="Assets\Scripts\SceneManager\SceneManagerScript.cs" />
+    <Compile Include="Assets\Scripts\SceneManager\SceneManagerStateMachine.cs" />
     <Compile Include="Assets\Scripts\Utils\HexMath.cs" />
     <Compile Include="Assets\Scripts\Utils\HexWorld.cs" />
   </ItemGroup>
