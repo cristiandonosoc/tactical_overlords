@@ -51,7 +51,7 @@ public class EntityScript : MonoBehaviour
 
     void OnMouseUp()
     {
-        _sceneManager.SetSelectedEntity(Entity);
+        _sceneManager.EntityClick(this);
     }
 
     #endregion

@@ -25,9 +25,9 @@ public class SceneManagerGUI : MonoBehaviour
                                 widthRatio * Screen.width, heightRatio * Screen.height);
         GUI.Box(guiRect, "Debug Window");
 
-        if (_sceneManager.SelectedEntity == null) { return; }
+        if (_sceneManager.SelectedEntityScript == null) { return; }
 
-        DisplayEntityInfo(_sceneManager.SelectedEntity, guiRect);
+        DisplayEntityInfo(_sceneManager.SelectedEntityScript.Entity, guiRect);
     }
 
     void DisplayEntityInfo(Entity entity, Rect guiRect)

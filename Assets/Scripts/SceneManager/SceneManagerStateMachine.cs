@@ -27,6 +27,11 @@ public partial class SceneManagerScript : MonoBehaviour
     #region IDLE STATE
 
     // For now, nothing to do
+    public void Idle_EntityClick(EntityScript clickedEntityScript)
+    {
+        SelectedEntityScript = clickedEntityScript;
+        _stateMachine.ChangeState(States.Selected);
+    }
 
     #endregion IDLE STATE
 
@@ -34,12 +39,13 @@ public partial class SceneManagerScript : MonoBehaviour
 
     #endregion SELECTED STATE
 
+    internal EntityScript SelectedEntityScript { get; private set; }
     List<Hexagon> _area;
     HashSet<uint> _areaSet;
     void Selected_Enter()
     {
         Debug.Log("ENTERING SELECTED STATE");
-        _area = GameLogic.Grid_Math.Area.EntityMovementRange(Map, SelectedEntity);
+        _area = GameLogic.Grid_Math.Area.EntityMovementRange(Map, SelectedEntityScript.Entity);
         _areaSet = new HashSet<uint>();
         foreach (Hexagon hexagon in _area)
         {
@@ -58,12 +64,19 @@ public partial class SceneManagerScript : MonoBehaviour
         Vector3 roundedCoords = HexCoordsUtils.GetHexRoundedWorldPosition(HexWorld, mousePos);
 
         // We get the path
+        Hexagon entityHexagon = SelectedEntityScript.Entity.Hexagon;
         List<Hexagon> path = new List<Hexagon>();
         GameLogic.Grid_Math.Path.GetPath(Map, path, _areaSet,
-                                         SelectedEntity.Hexagon.X, SelectedEntity.Hexagon.Y,
+                                         entityHexagon.X, entityHexagon.Y,
                                          (int)roundedCoords.x, (int)roundedCoords.y);
 
         _gridManager.PaintList(path, Color.red);
+    }
+
+    public void Selected_EntityClick(EntityScript clickedEntityScript)
+    {
+        SelectedEntityScript = clickedEntityScript;
+        _stateMachine.ChangeState(States.Selected, StateTransition.ForceSafe);
     }
 
     void Selected_Exit()

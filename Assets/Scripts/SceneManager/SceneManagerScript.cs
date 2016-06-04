@@ -2,6 +2,8 @@
 using GameLogic;
 using System.Collections.Generic;
 using Assets.Scripts.Utils;
+using System;
+using System.Reflection;
 
 public partial class SceneManagerScript : MonoBehaviour
 {
@@ -81,12 +83,25 @@ public partial class SceneManagerScript : MonoBehaviour
 
     #endregion
 
-    // TODO(Cristian): Should we receive an EntityScript and manage all in unity-speak?
-    internal Entity SelectedEntity { get; private set; }
-    internal void SetSelectedEntity(Entity entity)
+    public void EntityClick(EntityScript entityScript)
     {
-        if (SelectedEntity == entity) { return; }
-        SelectedEntity = entity;
-        _stateMachine.ChangeState(States.Selected, MonsterLove.StateMachine.StateTransition.ForceSafe);
+        // TODO(Cristian): Eventually we shouldn't use all this reflection,
+        // but for now it's very convenient
+        // IMPORTANT(Cristian): Methods apparently have to be public in order to be found
+        string methodName = string.Format("{0}_EntityClick", _stateMachine.State.ToString());
+        MethodInfo method = this.GetType().GetMethod(methodName);
+        if (method == null)
+        {
+            string msg = string.Format("State entity method {0} doesn't exist", methodName);
+            throw new InvalidProgramException(msg);
+        }
+        object[] args = new object[1];
+        args[0] = entityScript;
+        method.Invoke(this, args);
+    }
+
+    internal void HexagonClick(HexagonScript hexagonScript)
+    {
+
     }
 }
