@@ -148,5 +148,30 @@ namespace GameLogic
         }
 
         #endregion
+
+
+        #region INTENTS
+
+        public bool Move(Entity starter, Hexagon target, List<Action> intentResult)
+        {
+            // We verify that the path is valid
+            List<Hexagon> movementRange = Grid_Math.Area.EntityMovementRange(this, starter);
+            HashSet<uint> movementSet = Hexagon.GetKeySet(movementRange);
+            List<Hexagon> path = new List<Hexagon>();
+            bool validPath = Grid_Math.Path.GetPath(this, path, movementSet, starter.Hexagon, target);
+
+            if (!validPath) { return false; }
+
+            // The path is valid, so we generate the actions needed
+            foreach (Hexagon hexagon in path)
+            {
+                // We don't want to move to the same hexagon we're in
+                if (hexagon == starter.Hexagon) { continue; }
+                intentResult.Add(new Action(starter, hexagon));
+            }
+            return true;
+        }
+
+        #endregion INTENTS
     }
 }
