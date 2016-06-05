@@ -1,4 +1,6 @@
 ﻿using GameLogic.Utils;
+using System.Collections.Generic;
+
 namespace GameLogic
 {
     public class Hexagon
@@ -53,7 +55,20 @@ namespace GameLogic
             return key;
         }
 
-
+        /// <summary>
+        /// Returns a hashset with all the keys of the elements in the list
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static HashSet<uint> GetKeySet(List<Hexagon> list)
+        {
+            HashSet<uint> keySet = new HashSet<uint>();
+            foreach (Hexagon hexagon in list)
+            {
+                keySet.Add(hexagon.Key);
+            }
+            return keySet;
+        }
 
         #endregion
 

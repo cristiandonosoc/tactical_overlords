@@ -14,7 +14,6 @@ namespace GameLogic
 
         #endregion
 
-
         #region INTERFACE
 
         public Hexagon[] Grid { get { return _grid; } }

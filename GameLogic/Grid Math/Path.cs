@@ -12,7 +12,9 @@ namespace GameLogic.Grid_Math
         /// Obtains the shortest path between two hexagons. Uses A* underneath
         /// </summary>
         /// <param name="context">The Map to be searched</param>
-        /// <param name="resultList">List to store the path in</param>
+        /// <param name="resultList">
+        /// List to store the path in. Null means that no path is wanted, but only a check
+        /// </param>
         /// <param name="filterList">The set of hexagons to limit the search to. Can be null</param>
         /// <param name="startX">X coord of start hexagon</param>
         /// <param name="startY">Y coord of start hexagon</param>
@@ -32,7 +34,9 @@ namespace GameLogic.Grid_Math
         /// Obtains the shortest path between two hexagons. Uses A* underneath
         /// </summary>
         /// <param name="context">The Map to be searched</param>
-        /// <param name="resultList">List to store the path in</param>
+        /// <param name="resultList">
+        /// List to store the path in. Null means that no path is wanted, but only a check
+        /// </param>
         /// <param name="filterList">The set of hexagons to limit the search to. Can be null</param>
         /// <param name="start">start hexagon</param>
         /// <param name="goal">goal hexagon</param>
@@ -88,7 +92,10 @@ namespace GameLogic.Grid_Math
                 // If we found the goal, we're done. Just return the path
                 if (current == goal)
                 {
-                    ReconstructPath(context, resultList, start, goal, parentMap);
+                    if (resultList != null)
+                    {
+                        ReconstructPath(context, resultList, start, goal, parentMap);
+                    }
                     return true;
                 }
 
