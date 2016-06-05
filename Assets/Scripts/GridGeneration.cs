@@ -26,11 +26,13 @@ internal static class GridGeneration
 
         // We instantiate the prefabs
         Vector3 hexCoords = Vector3.zero;
+        Hexagon hexagon;
         for (int hY = 0; hY < gridHeight; ++hY)
         {
             for (int hX = 0; hX < gridWidth; ++hX)
             {
-                if (map.GetHexagon(hX, hY) == null) { continue; }
+                hexagon = map.GetHexagon(hX, hY);
+                if (hexagon == null) { continue; }
 
                 hexCoords.x = hX;
                 hexCoords.y = hY;
@@ -39,6 +41,7 @@ internal static class GridGeneration
                                                                    hexPosition,
                                                                    hexagonPrefab.localRotation);
                 HexagonScript hexagonScript = t.GetComponent<HexagonScript>();
+                hexagonScript.Hexagon = hexagon;
                 t.parent = mainTransform;
                 t.gameObject.name = string.Format("{0}_{1}", hX, hY);
 

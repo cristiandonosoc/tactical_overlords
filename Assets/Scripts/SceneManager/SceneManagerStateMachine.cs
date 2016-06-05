@@ -33,6 +33,11 @@ public partial class SceneManagerScript : MonoBehaviour
         _stateMachine.ChangeState(States.Selected);
     }
 
+    public void Idle_HexagonClick(HexagonScript clickedHexagonScript)
+    {
+        // Do nothing
+    }
+
     #endregion IDLE STATE
 
     #region SELECTED STATE
@@ -77,6 +82,15 @@ public partial class SceneManagerScript : MonoBehaviour
     {
         SelectedEntityScript = clickedEntityScript;
         _stateMachine.ChangeState(States.Selected, StateTransition.ForceSafe);
+    }
+
+    public void Selected_HexagonClick(HexagonScript clickedHexagonScript)
+    {
+        if (_areaSet.Contains(clickedHexagonScript.Hexagon.Key))
+        {
+            // TODO(Cristian): Trigger move action
+            Debug.Log("Move");
+        }
     }
 
     void Selected_Exit()

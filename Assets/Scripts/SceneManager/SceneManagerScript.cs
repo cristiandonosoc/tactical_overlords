@@ -102,6 +102,18 @@ public partial class SceneManagerScript : MonoBehaviour
 
     internal void HexagonClick(HexagonScript hexagonScript)
     {
-
+        // TODO(Cristian): Eventually we shouldn't use all this reflection,
+        // but for now it's very convenient
+        // IMPORTANT(Cristian): Methods apparently have to be public in order to be found
+        string methodName = string.Format("{0}_HexagonClick", _stateMachine.State.ToString());
+        MethodInfo method = this.GetType().GetMethod(methodName);
+        if (method == null)
+        {
+            string msg = string.Format("State entity method {0} doesn't exist", methodName);
+            throw new InvalidProgramException(msg);
+        }
+        object[] args = new object[1];
+        args[0] = hexagonScript;
+        method.Invoke(this, args);
     }
 }

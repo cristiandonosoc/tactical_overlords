@@ -41,12 +41,6 @@ public class EntityScript : MonoBehaviour
         _sceneManager = SceneManagerScript.GetInstance();
     }
 
-    // Update is called once per frame
-    void Update ()
-    {
-
-    }
-
     #region MOUSE INTERACTION
 
     void OnMouseUp()
