@@ -167,7 +167,7 @@ namespace GameLogic
             {
                 // We don't want to move to the same hexagon we're in
                 if (hexagon == starter.Hexagon) { continue; }
-                intentResult.Add(new Action(starter, hexagon));
+                intentResult.Add(new Action(starter, hexagon, Action.ActionType.Move));
             }
             return true;
         }

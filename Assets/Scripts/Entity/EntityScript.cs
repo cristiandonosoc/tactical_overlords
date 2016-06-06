@@ -3,6 +3,11 @@ using GameLogic;
 
 public class EntityScript : MonoBehaviour
 {
+    #region EDITOR
+
+    public float speed;
+
+    #endregion EDITOR
 
     #region INTERFACE
 

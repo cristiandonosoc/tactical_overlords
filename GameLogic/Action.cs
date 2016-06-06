@@ -7,7 +7,7 @@ namespace GameLogic
 {
     public class Action
     {
-        public enum Type
+        public enum ActionType
         {
             Move,
             Attack
@@ -15,11 +15,13 @@ namespace GameLogic
 
         public Entity Author { get; private set; }
         public Hexagon Target { get; private set; }
+        public ActionType Type { get; private set; }
 
-        public Action(Entity author, Hexagon target)
+        public Action(Entity author, Hexagon target, ActionType type)
         {
             Author = author;
             Target = target;
+            Type = type;
         }
     }
 }
