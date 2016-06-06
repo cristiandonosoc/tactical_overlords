@@ -10,7 +10,7 @@ namespace GameLogic
         // through the map. The setter of entity will check that this boolean
         // is set. If not, an exception will be thrown.
         // Just throwing ideas around.
-        internal static bool EntityAddThroughMap = false;
+        internal static bool EntityAddThroughMap { get; private set; }
 
         #endregion
 
@@ -53,7 +53,7 @@ namespace GameLogic
         #endregion
 
         // All entity adding *should* go through here
-        private bool AddEntityToHexagon(int x, int y, Entity entity)
+        internal bool AddEntityToHexagon(int x, int y, Entity entity)
         {
             Hexagon hex = GetHexagon(x, y);
             if ((hex == null) || (hex.Entity != null)) { return false; }
@@ -62,7 +62,7 @@ namespace GameLogic
             return result;
         }
 
-        private bool AddEntityToHexagon(Hexagon hexagon, Entity entity)
+        internal bool AddEntityToHexagon(Hexagon hexagon, Entity entity)
         {
             // This is a valid adding path
             EntityAddThroughMap = true;
@@ -76,6 +76,23 @@ namespace GameLogic
             hexagon.Entity = entity;
             entity.Hexagon = hexagon;
             EntityAddThroughMap = false;
+            return true;
+        }
+
+        internal bool RemoveEntityFromHexagon(Hexagon hexagon, Entity entity)
+        {
+            EntityAddThroughMap = true;
+            bool found = _characterCoordDictionary.Remove(hexagon.Key);
+            if (!found)
+            {
+                return false;
+            }
+
+            hexagon.Entity = null;
+            entity.Hexagon = null;
+
+            EntityAddThroughMap = false;
+
             return true;
         }
 
@@ -152,9 +169,17 @@ namespace GameLogic
 
         #region INTENTS
 
+        List<Action> _currentIntentActions = new List<Action>();
+
         public bool Move(Entity starter, Hexagon target, List<Action> intentResult)
         {
+            if (_currentIntentActions.Count > 0)
+            {
+                throw new System.Exception("Current intent list is not completely executed");
+            }
+
             // We verify that the path is valid
+            // TODO(Cristian): Collision detection between entities
             List<Hexagon> movementRange = Grid_Math.Area.EntityMovementRange(this, starter);
             HashSet<uint> movementSet = Hexagon.GetKeySet(movementRange);
             List<Hexagon> path = new List<Hexagon>();
@@ -167,9 +192,35 @@ namespace GameLogic
             {
                 // We don't want to move to the same hexagon we're in
                 if (hexagon == starter.Hexagon) { continue; }
-                intentResult.Add(new Action(starter, hexagon, Action.ActionType.Move));
+                intentResult.Add(new Action(this, starter, hexagon, 
+                                            Action.ActionType.Move));
             }
+
+            // We copy the intent action
+            _currentIntentActions.Clear();
+            foreach (Action action in intentResult)
+            {
+                // Doesn't matter that we are on other order
+                _currentIntentActions.Add(action);
+            }
+            _currentIntentActions.Reverse();
+            
             return true;
+        }
+
+        public void ExecuteAction(Action action)
+        {
+            // We search it
+            if (!_currentIntentActions.Contains(action))
+            {
+                throw new System.Exception("Executing action not in current list");
+            }
+
+            // We execute
+            action.Execute();
+
+            // We remove it
+            _currentIntentActions.Remove(action);
         }
 
         #endregion INTENTS

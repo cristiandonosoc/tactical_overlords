@@ -17,11 +17,28 @@ namespace GameLogic
         public Hexagon Target { get; private set; }
         public ActionType Type { get; private set; }
 
-        public Action(Entity author, Hexagon target, ActionType type)
+        private Map _map;
+
+        public Action(Map map, Entity author, Hexagon target, ActionType type)
         {
+            _map = map;
             Author = author;
             Target = target;
             Type = type;
+        }
+
+        internal void Execute()
+        {
+            switch (Type)
+            {
+                case ActionType.Move:
+                {
+                        Author.Hexagon = Target;
+                        // TODO(Cristian): Collision detection
+                        _map.RemoveEntityFromHexagon(Author.Hexagon, Author);
+                        _map.AddEntityToHexagon(Target, Author);
+                } break;
+            }
         }
     }
 }

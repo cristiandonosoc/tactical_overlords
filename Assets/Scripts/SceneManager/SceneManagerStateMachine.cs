@@ -150,6 +150,8 @@ public partial class SceneManagerScript : MonoBehaviour
                 case Action.ActionType.Move:
                 {
                         yield return MovementAction(action);
+                        // The action is ready
+                        Map.ExecuteAction(action);
                 } break;
             }
         }
