@@ -63,6 +63,11 @@ public partial class SceneManagerScript : MonoBehaviour
         SetupStateMachine();
     }
 
+    void Update()
+    {
+        _stateMachine.Update();
+    }
+
     private void GenerateMapData()
     {
         Map = new Map(GridWidth, GridHeight, 2);

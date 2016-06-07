@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
-using MonsterLove.StateMachine;
 using GameLogic;
 using System.Collections.Generic;
 using Assets.Scripts.Utils;
 using System.Collections;
-
+using Assets.Scripts.StateMachine;
 public partial class SceneManagerScript : MonoBehaviour
 {
     public enum States
@@ -19,8 +18,8 @@ public partial class SceneManagerScript : MonoBehaviour
     // This is to be called by the Start method in the main SceneManagerScript definition
     void SetupStateMachine()
     {
-        _stateMachine = StateMachine<States>.Initialize(this);
-        _stateMachine.ChangeState(States.Idle);
+        _stateMachine = new StateMachine<States>(this);
+        //_stateMachine.ChangeState(States.Idle);
     }
 
     #region STATE MACHINE
@@ -74,7 +73,6 @@ public partial class SceneManagerScript : MonoBehaviour
         _gridManager.ClearGrid();
         // We highlight the area
         _gridManager.PaintList(_area, Color.green);
-        // We highlight the path
 
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector3 roundedCoords = HexCoordsUtils.GetHexRoundedWorldPosition(HexWorld, mousePos);
@@ -86,13 +84,14 @@ public partial class SceneManagerScript : MonoBehaviour
                                          entityHexagon.X, entityHexagon.Y,
                                          (int)roundedCoords.x, (int)roundedCoords.y);
 
+        // We highlight the path
         _gridManager.PaintList(_path, Color.red);
     }
 
     public void Selected_EntityClick(EntityScript clickedEntityScript)
     {
         SelectedEntityScript = clickedEntityScript;
-        _stateMachine.ChangeState(States.Selected, StateTransition.ForceSafe);
+        _stateMachine.ChangeState(States.Selected);
     }
 
     public void Selected_HexagonClick(HexagonScript clickedHexagonScript)
