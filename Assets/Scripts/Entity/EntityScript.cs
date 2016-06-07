@@ -39,11 +39,14 @@ public class EntityScript : MonoBehaviour
     #endregion
 
     private SceneManagerScript _sceneManager;
+    // TODO(Cristian): This is temporal! Not true for all entities
+    private BarScript _barScript;
     
     // Use this for initialization
     void Start ()
     {
         _sceneManager = SceneManagerScript.GetInstance();
+        _barScript = GetComponentInChildren<BarScript>();
     }
 
     #region MOUSE INTERACTION
@@ -51,6 +54,7 @@ public class EntityScript : MonoBehaviour
     void OnMouseUp()
     {
         _sceneManager.EntityClick(this);
+        _barScript.Range -= 0.1f;
     }
 
     #endregion
